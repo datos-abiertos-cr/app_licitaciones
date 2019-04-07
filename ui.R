@@ -4,6 +4,7 @@ library(shinydashboard)
 library(ggplot2)
 library(dplyr)
 library(feather)
+library(kableExtra)
 
 # Encabezado --------------------------------------------------------------
 header <- dashboardHeader(
@@ -14,7 +15,8 @@ header <- dashboardHeader(
 # Sidebar -----------------------------------------------------------------
 sidebar <- dashboardSidebar(
   sidebarMenu(
-    menuItem("Resumen General", tabName = "resumen_general", icon = icon("suitcase"))
+    menuItem("Resumen General", tabName = "resumen_general", icon = icon("suitcase")),
+    menuItem("Figuras", tabName = "figuras_tipo_tramite", icon = icon("chart-bar"))
   )
 )
 
@@ -28,6 +30,15 @@ body <- dashboardBody({
             title = "Cuadro mayores instituciones  con adjudicaciones",
             status = "danger",
             tableOutput("instituciones_adjudicacion"))
+      )
+    ),
+    tabItem(
+      tabName = "figuras_tipo_tramite",
+      fluidRow(
+        box(width = 6,
+            title = "Adjudicaciones por tipo de tramite",
+            status = "danger",
+            plotOutput("adjudicaciones_colones"))
       )
     )
   )
