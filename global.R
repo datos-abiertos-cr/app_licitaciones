@@ -1,5 +1,10 @@
 # global.R
-
+library(shiny)
+library(shinydashboard)
+library(ggplot2)
+library(dplyr)
+library(feather)
+library(kableExtra)
 
 # Datos -------------------------------------------------------------------
 licitaciones <- read_feather("datos/licitaciones.feather")
@@ -26,5 +31,9 @@ moneda <- function(x, moneda = "colones") {
     print("Error de denominación de moneda")
   }
 }
+
+# Formato números --------------------------------------------------------
+
+options(scipen = 9999)
 
 

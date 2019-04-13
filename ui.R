@@ -1,10 +1,4 @@
 # ui.R
-library(shiny)
-library(shinydashboard)
-library(ggplot2)
-library(dplyr)
-library(feather)
-library(kableExtra)
 
 # Encabezado --------------------------------------------------------------
 header <- dashboardHeader(
@@ -16,7 +10,9 @@ header <- dashboardHeader(
 sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem("Resumen General", tabName = "resumen_general", icon = icon("suitcase")),
-    menuItem("Figuras", tabName = "figuras_tipo_tramite", icon = icon("chart-bar"))
+    menuItem("Figuras", tabName = "figuras_tipo_tramite", icon = icon("chart-bar")),
+    menuItem("Instituciones Públicas", tabName = "proveedores_por_institucion",
+             icon = icon("building "))
   )
 )
 
@@ -40,13 +36,30 @@ body <- dashboardBody({
             status = "danger",
             plotOutput("adjudicaciones_colones"))
       )
+    ),
+    tabItem(
+      tabName = "proveedores_por_institucion",
+      fluidRow(
+        plotOutput("instituciones")
+      ),
+      fluidRow(
+        column(
+          width = 6,
+          uiOutput("proveedores_slider")
+      ),
+      column(
+        width = 6,
+        selectInput("institucion", "Institución pública",
+                    choices = adjudicaciones_colones$institucion)
+      )
+      )
     )
   )
 })
 
 # App completo ------------------------------------------------------------
 dashboardPage(
-  skin = "blue",
+  skin = "black",
   header,
   sidebar,
   body
