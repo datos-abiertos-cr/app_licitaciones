@@ -104,14 +104,10 @@ server <- function(input, output) {
 # Podría ser elección de institución y que cuando se selecciones aparezcan
 # Los mayores proveedores, los montos a cada uno, el tipo de tramite.
 
-
-
 # Una pantalla general con resumenes generales como los que están en el EDA.
 # Luego tabs con segementos como el explicado anteriormente
 
 # Ministerio de Educación Pública
-
-
 
 # datos <- adjudicaciones_colones %>%
 #   filter(institucion == "CONSEJO NACIONAL DE CONCESIONES") %>%
@@ -164,14 +160,3 @@ server <- function(input, output) {
 #   theme_classic() 
 #   theme(legend.position = "none") 
   
-
-
-
-
-
-
-
-
-
-
-
