@@ -9,9 +9,16 @@ header <- dashboardHeader(
 # Sidebar -----------------------------------------------------------------
 sidebar <- dashboardSidebar(
   sidebarMenu(
-    menuItem("Resumen General", tabName = "resumen_general", icon = icon("suitcase")),
-    menuItem("Figuras", tabName = "figuras_tipo_tramite", icon = icon("chart-bar")),
-    menuItem("Instituciones Públicas", tabName = "proveedores_por_institucion",
+    menuItem("Resumen General", 
+             tabName = "resumen_general",
+             icon = icon("suitcase")),
+    
+    menuItem("Proveedores", 
+             tabName = "instituciones_por_proveedor",
+             icon = icon("chart-bar")),
+    
+    menuItem("Instituciones Públicas", 
+             tabName = "proveedores_por_institucion",
              icon = icon("building "))
   )
 )
@@ -19,6 +26,9 @@ sidebar <- dashboardSidebar(
 # Cuerpo ------------------------------------------------------------------
 body <- dashboardBody({
   tabItems(
+
+# TAB GENERAL -------------------------------------------------------------
+
     tabItem(
       tabName = "resumen_general",
       fluidRow(
@@ -28,15 +38,37 @@ body <- dashboardBody({
             tableOutput("instituciones_adjudicacion"))
       )
     ),
+    
+
+# TAB PROVEEDORES ---------------------------------------------------------
+
     tabItem(
-      tabName = "figuras_tipo_tramite",
+      tabName = "instituciones_por_proveedor",
       fluidRow(
-        box(width = 6,
-            title = "Adjudicaciones por tipo de tramite",
-            status = "danger",
-            plotOutput("adjudicaciones_colones"))
-      )
+        column(
+          width = 8,
+          plotOutput("proveedores")
+        ),
+        column(
+          width = 4,
+          plotOutput("porcentaje_seleccion_proveedor")
+        )),
+      
+      fluidRow(
+        column(
+          width = 6,
+          uiOutput("cantidad_instituciones_slider")
+        ),
+        column(
+          width = 6,
+          selectInput("proveedor", "Proveedor",
+                      choices = adjudicaciones_colones$proveedor_adjudicado)
+        ))
     ),
+
+
+# TAB INSTITUCIONES -------------------------------------------------------
+
     tabItem(
       tabName = "proveedores_por_institucion",
       fluidRow(
@@ -51,7 +83,7 @@ body <- dashboardBody({
       fluidRow(
         column(
           width = 6,
-          uiOutput("proveedores_slider")
+          uiOutput("cantidad_proveedores_slider")
       ),
       column(
         width = 6,
