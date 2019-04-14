@@ -16,6 +16,7 @@ server <- function(input, output) {
       knitr::kable("html") %>%
       kable_styling(bootstrap_options = c("striped", "hover"))
   }
+  
   output$adjudicaciones_colones <- renderPlot({
     ggplot(adjudicaciones_colones, aes(x = ano, y = monto_adjudicado, fill = tipo_tramite)) +
       geom_bar(stat = "identity") + 
@@ -49,15 +50,45 @@ server <- function(input, output) {
     datos %>% 
       arrange(desc(total_monto)) %>% 
       slice(1:input$proveedores_slider) %>% 
-      ggplot(aes(x = proveedor_adjudicado, y = total_monto, fill = proveedor_adjudicado)) + 
+      ggplot(aes(x = reorder(proveedor_adjudicado, total_monto), y = total_monto, fill = proveedor_adjudicado)) + 
       geom_bar(stat = "identity") +
       scale_fill_viridis_d() +
-      coord_flip() + 
       labs(y = "Total monto adjudicado",
            x = "Proveedores adjudicados") +
-      theme(axis.text.y = element_text(angle = 90, vjust = 0.5, size = 16)) +
+      coord_flip() + 
       theme_bw(base_size = 14) +
+      theme(axis.text.x  = element_text(angle = 25, vjust = 0.5, size = 16)) +
       theme(legend.position = "none")
+  })
+  
+  output$porcentaje_seleccion <- renderPlot({
+    datos <- adjudicaciones_colones %>%
+      filter(institucion == input$institucion) %>%
+      group_by(proveedor_adjudicado) %>%
+      summarise(
+        total_contratos = n(),
+        total_monto = sum(monto_adjudicado)
+      ) 
+    
+    # hacer mutate por monto mayor igual al ultimo seleccionado
+    b <- datos %>% 
+      arrange(desc(total_monto)) %>%
+      slice(1:input$proveedores_slider)
+    
+    valor <- min(b$total_monto)
+    
+    datos %>%
+      mutate(seleccion = ifelse(total_monto >= valor, "Seleccionados", "Resto")) %>%
+      mutate(unidad = "") %>%
+      ggplot(aes(x = unidad, y = total_monto, fill = seleccion)) +
+      geom_bar(stat = "identity", position = "fill") +
+      scale_fill_manual(values = c("#2B7C8D", "#73CF56" )) +
+      labs(x = "",
+           y = "Porcentaje correspondiente del monto total",
+           fill = "Selección de la cantidad
+       de proveedores") +
+      theme_classic() 
+    
   })
 }
 
@@ -82,9 +113,57 @@ server <- function(input, output) {
 
 
 
- 
+# datos <- adjudicaciones_colones %>%
+#   filter(institucion == "CONSEJO NACIONAL DE CONCESIONES") %>%
+#   group_by(proveedor_adjudicado) %>%
+#   summarise(
+#     total_contratos = n(),
+#     total_monto = sum(monto_adjudicado)
+#   )
+# 
+# datos %>%
+#   arrange(desc(total_monto)) %>%
+#   slice(1:10) %>%
+#   ggplot(aes(x = proveedor_adjudicado, y = total_monto, fill = proveedor_adjudicado)) +
+#   geom_bar(stat = "identity") +
+#   scale_fill_viridis_d() +
+#   labs(y = "Total monto adjudicado",
+#        x = "Proveedores adjudicados") +
+#   coord_flip() +
+#   theme_bw(base_size = 14) +
+#   theme(axis.text.x  = element_text(angle = 65, vjust = 0.5, size = 16)) +
+#   theme(legend.position = "none")
 
-
+# # Prueba para categorizar primeros proveedores
+# datos <- adjudicaciones_colones %>%
+#   filter(institucion == "CONSEJO NACIONAL DE CONCESIONES") %>%
+#   group_by(proveedor_adjudicado) %>%
+#   summarise(
+#     total_contratos = n(),
+#     total_monto = sum(monto_adjudicado)
+#   )
+# 
+# # hacer mutate por monto mayor igual al ultimo seleccionado
+# 
+# b <- datos %>%
+#   arrange(desc(total_monto)) %>%
+#   slice(1:2)
+# 
+# valor <- min(b$total_monto)
+# 
+# datos %>%
+#   mutate(seleccion = ifelse(total_monto >= valor, "Seleccionados", "Resto")) %>%
+#   mutate(unidad = "") %>%
+#   ggplot(aes(x = unidad, y = total_monto, fill = seleccion)) +
+#   geom_bar(stat = "identity", position = "fill") +
+#   scale_fill_manual(values = c("#2B7C8D", "#73CF56" )) +
+#   labs(x = "",
+#        y = "Porcentaje correspondiente del monto total",
+#        fill = "Selección de la cantidad
+#        de proveedores") +
+#   theme_classic() 
+#   theme(legend.position = "none") 
+  
 
 
 

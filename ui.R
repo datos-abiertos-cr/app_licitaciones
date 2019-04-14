@@ -40,8 +40,14 @@ body <- dashboardBody({
     tabItem(
       tabName = "proveedores_por_institucion",
       fluidRow(
+        column(
+          width = 8,
         plotOutput("instituciones")
       ),
+      column(
+        width = 4,
+        plotOutput("porcentaje_seleccion")
+      )),
       fluidRow(
         column(
           width = 6,
@@ -51,8 +57,7 @@ body <- dashboardBody({
         width = 6,
         selectInput("institucion", "Institución pública",
                     choices = adjudicaciones_colones$institucion)
-      )
-      )
+      ))
     )
   )
 })
