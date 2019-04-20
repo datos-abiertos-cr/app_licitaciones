@@ -20,82 +20,82 @@ server <- function(input, output) {
   
 
 # TAB PROVEEDORES ---------------------------------------------------------
-  output$proveedores_slider <- renderUI({
-    datos <- adjudicaciones_colones %>% 
-      filter(institucion == input$institucion) %>% 
-      group_by(proveedor_adjudicado) %>% 
-      summarise(
-        total_contratos = n()
-      )
-    sliderInput("cantidad_instituciones_slider", "Cantidad de instituciones públicas",
-                min = 1,
-                max = nrow(datos),
-                value = 10)
-  })
-  
-  output$proveedores <- renderPlot({
-    datos <- adjudicaciones_colones %>% 
-      filter(institucion == input$proveedor) %>% 
-      group_by(proveedor_adjudicado) %>% 
-      summarise(
-        total_contratos = n(),
-        total_monto = sum(monto_adjudicado)
-      )
-    
-    datos %>% 
-      arrange(desc(total_monto)) %>% 
-      slice(1:input$proveedores_slider) %>% 
-      ggplot(aes(x = reorder(proveedor_adjudicado, total_monto), y = total_monto, fill = proveedor_adjudicado)) + 
-      geom_bar(stat = "identity") +
-      scale_fill_viridis_d() +
-      labs(y = "Total monto adjudicado",
-           x = "Proveedores adjudicados") +
-      coord_flip() + 
-      theme_bw(base_size = 14) +
-      theme(axis.text.x  = element_text(angle = 25, vjust = 0.5, size = 16)) +
-      theme(legend.position = "none")
-  })
-  
-  
-  output$porcentaje_seleccion_proveedor <- renderPlot({
-    datos <- adjudicaciones_colones %>%
-      filter(institucion == input$institucion) %>%
-      group_by(proveedor_adjudicado) %>%
-      summarise(
-        total_contratos = n(),
-        total_monto = sum(monto_adjudicado)
-      ) 
-    
-    valores_seleccionar <- datos %>% 
-      arrange(desc(total_monto)) %>%
-      slice(1:input$proveedores_slider)
-    
-    valor <- min(valores_seleccionar$total_monto)
-    
-    datos %>%
-      mutate(seleccion = ifelse(total_monto >= valor, "Seleccionados", "Resto")) %>%
-      mutate(unidad = "") %>%
-      ggplot(aes(x = unidad, y = total_monto, fill = seleccion)) +
-      geom_bar(stat = "identity", position = "fill") +
-      scale_fill_manual(values = c("#2B7C8D", "#73CF56" )) +
-      labs(x = "",
-           y = "Porcentaje correspondiente del monto total",
-           fill = "Selección de la cantidad
-       de proveedores") +
-      theme_classic() 
-    
-  })
+  # output$cantidad_instituciones_slider <- renderUI({
+  #   datos <- adjudicaciones_colones %>% 
+  #     filter(proveedor_adjudicado == input$proveedor) %>% 
+  #     group_by(institucion) %>% 
+  #     summarise(
+  #       total_contratos = n()
+  #     )
+  #   sliderInput("instituciones_slider", "Cantidad de instituciones públicas",
+  #               min = 1,
+  #               max = nrow(datos),
+  #               value = 10)
+  # })
+  # 
+  # output$proveedores <- renderPlot({
+  #   datos <- adjudicaciones_colones %>% 
+  #     filter(proveedor_adjudicado == input$proveedor) %>% 
+  #     group_by(institucion) %>% 
+  #     summarise(
+  #       total_contratos = n(),
+  #       total_monto = sum(monto_adjudicado)
+  #     )
+  #   
+  #   datos %>% 
+  #     arrange(desc(total_monto)) %>% 
+  #     slice(1:input$instituciones_slider) %>% 
+  #     ggplot(aes(x = reorder(institucion, total_monto), y = total_monto, fill = institucion)) + 
+  #     geom_bar(stat = "identity") +
+  #     scale_fill_viridis_d() +
+  #     labs(y = "Total monto adjudicado",
+  #          x = "Instituciones que adjudicaron") +
+  #     coord_flip() + 
+  #     theme_bw(base_size = 14) +
+  #     theme(axis.text.x  = element_text(angle = 25, vjust = 0.5, size = 16)) +
+  #     theme(legend.position = "none")
+  # })
+  # 
+  # 
+  # output$porcentaje_seleccion_proveedor <- renderPlot({
+  #   datos <- adjudicaciones_colones %>%
+  #     filter(proveedor_adjudicado == input$proveedor) %>% 
+  #     group_by(institucion) %>% 
+  #     summarise(
+  #       total_contratos = n(),
+  #       total_monto = sum(monto_adjudicado)
+  #     )
+  #   
+  #   valores_seleccionar <- datos %>% 
+  #     arrange(desc(total_monto)) %>%
+  #     slice(1:input$instituciones_slider)
+  #   
+  #   valor <- min(valores_seleccionar$total_monto)
+  #   
+  #   datos %>%
+  #     mutate(seleccion = ifelse(total_monto >= valor, "Seleccionados", "Resto")) %>%
+  #     mutate(unidad = "") %>%
+  #     ggplot(aes(x = unidad, y = total_monto, fill = seleccion)) +
+  #     geom_bar(stat = "identity", position = "fill") +
+  #     scale_fill_manual(values = c("#2B7C8D", "#73CF56" )) +
+  #     labs(x = "",
+  #          y = "Porcentaje correspondiente del monto total",
+  #          fill = "Selección de la cantidad
+  #      de instituciones") +
+  #     theme_classic() 
+  #   
+  # })
 
 # TAB INSTITUCIONES -------------------------------------------------------
 
- output$proveedores_slider <- renderUI({
+ output$cantidad_proveedores_slider <- renderUI({
     datos <- adjudicaciones_colones %>% 
       filter(institucion == input$institucion) %>% 
       group_by(proveedor_adjudicado) %>% 
       summarise(
         total_contratos = n()
       )
-    sliderInput("cantidad_proveedores_slider", "Cantidad de proveedores",
+    sliderInput("proveedores_slider", "Cantidad de proveedores",
                 min = 1,
                 max = nrow(datos),
                 value = 10)

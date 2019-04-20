@@ -42,29 +42,29 @@ body <- dashboardBody({
 
 # TAB PROVEEDORES ---------------------------------------------------------
 
-    tabItem(
-      tabName = "instituciones_por_proveedor",
-      fluidRow(
-        column(
-          width = 8,
-          plotOutput("proveedores")
-        ),
-        column(
-          width = 4,
-          plotOutput("porcentaje_seleccion_proveedor")
-        )),
-      
-      fluidRow(
-        column(
-          width = 6,
-          uiOutput("cantidad_instituciones_slider")
-        ),
-        column(
-          width = 6,
-          selectInput("proveedor", "Proveedor",
-                      choices = adjudicaciones_colones$proveedor_adjudicado)
-        ))
-    ),
+    # tabItem(
+    #   tabName = "instituciones_por_proveedor",
+    #   fluidRow(
+    #     column(
+    #       width = 8,
+    #       plotOutput("proveedores")
+    #     ),
+    #     column(
+    #       width = 4,
+    #       plotOutput("porcentaje_seleccion_proveedor")
+    #     )),
+    #   
+    #   fluidRow(
+    #     column(
+    #       width = 6,
+    #       uiOutput("cantidad_instituciones_slider")
+    #     ),
+    #     column(
+    #       width = 6,
+    #       selectInput("proveedor", "Proveedor",
+    #                   choices = adjudicaciones_colones$proveedor_adjudicado)
+    #     ))
+    # ),
 
 
 # TAB INSTITUCIONES -------------------------------------------------------
@@ -74,11 +74,23 @@ body <- dashboardBody({
       fluidRow(
         column(
           width = 8,
-        plotOutput("instituciones")
+          box(
+            width = 12,
+            title = "Cantidad de proveedores con mayores montos",
+            status = "primary",
+            solidHeader = TRUE,
+            plotOutput("instituciones")
+          )
       ),
       column(
         width = 4,
-        plotOutput("porcentaje_seleccion")
+        box(
+          width = 12,
+          title = "Porcentaje de proveedores elegidos con respecto al total",
+          status = "warning",
+          solidHeader = TRUE,
+          plotOutput("porcentaje_seleccion")
+        )
       )),
       fluidRow(
         column(
@@ -96,7 +108,7 @@ body <- dashboardBody({
 
 # App completo ------------------------------------------------------------
 dashboardPage(
-  skin = "black",
+  skin = "purple",
   header,
   sidebar,
   body
