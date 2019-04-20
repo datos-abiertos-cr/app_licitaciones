@@ -36,9 +36,20 @@ body <- dashboardBody({
             title = "Cuadro mayores instituciones  con adjudicaciones",
             status = "danger",
             tableOutput("instituciones_adjudicacion"))
+      ),
+      
+      fluidRow(
+        # column(
+          # width = 12,
+          valueBoxOutput("cantidad_instituciones"),
+        # ),
+        # column(
+        #   width = 12,
+          valueBoxOutput("cantidad_proveedores")
+        # )
       )
+      
     ),
-    
 
 # TAB PROVEEDORES ---------------------------------------------------------
 
@@ -46,24 +57,49 @@ body <- dashboardBody({
       tabName = "instituciones_por_proveedor",
       fluidRow(
         column(
+          width = 6,
+          box(
+            width = 12,
+            title = "ELegir cantidad de instituciones a graficar",
+            status = "info",
+            solidHeader = TRUE,
+            uiOutput("cantidad_instituciones_slider")
+          )
+        ),
+        column(
+          width = 6,
+          box(
+            width = 12,
+            title = "ELegir proveedor a explorar",
+            status = "info",
+            solidHeader = TRUE,
+            selectInput("proveedor", "Proveedor",
+                        choices = adjudicaciones_colones$proveedor_adjudicado)
+          )
+        )),
+      
+      fluidRow(
+        column(
           width = 8,
-          plotOutput("proveedores")
+          box(
+            width = 12,
+            title = "Cantidad de instituciones con mayores montos",
+            status = "primary",
+            solidHeader = TRUE,
+            plotOutput("proveedores")
+          )
         ),
         column(
           width = 4,
-          plotOutput("porcentaje_seleccion_proveedor")
-        )),
-
-      fluidRow(
-        column(
-          width = 6,
-          uiOutput("cantidad_instituciones_slider")
-        ),
-        column(
-          width = 6,
-          selectInput("proveedor", "Proveedor",
-                      choices = adjudicaciones_colones$proveedor_adjudicado)
+          box(
+            width = 12,
+            title = "Porcentaje de instituciones elegidos con respecto al total",
+            status = "warning",
+            solidHeader = TRUE,
+            plotOutput("porcentaje_seleccion_proveedor")
+          )
         ))
+      
     ),
 
 

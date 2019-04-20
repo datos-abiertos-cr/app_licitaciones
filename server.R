@@ -5,46 +5,59 @@ server <- function(input, output) {
 # TAB GENERAL -------------------------------------------------------------
 
   output$instituciones_adjudicacion <- function(){
-    adjudicaciones_colones %>% 
+    adjudicaciones_colones <- adjudicaciones_colones %>% 
       group_by(institucion) %>% 
       summarise(
         total = n(),
         monto = sum(monto_adjudicado, na.rm = TRUE)
       ) %>% 
       arrange(desc(total)) %>% 
-      mutate(monto = moneda(monto)) %>%
+      mutate(monto = moneda(monto))
+    
+    adjudicaciones_colones %>% 
       slice(1:30) %>% 
       knitr::kable("html") %>%
       kable_styling(bootstrap_options = c("striped", "hover"))
   }
   
+  output$cantidad_instituciones <- renderValueBox({
+    valueBox(length(unique(adjudicaciones_colones$institucion)),
+             "Instituciones públicas en total analizadas",
+             icon = icon("city"),
+             color = "aqua")
+  })
+  
+  output$cantidad_proveedores <- renderValueBox({
+    valueBox(length(unique(adjudicaciones_colones$proveedor_adjudicado)),
+             "Proveedores en total analizados",
+             icon = icon("cart-plus"),
+             color = "olive")
+  })
 
 # TAB PROVEEDORES ---------------------------------------------------------
   
-  
-  output$cantidad_instituciones_slider <- renderUI({
-    datos <- adjudicaciones_colones %>%
+  datos_proveedor <- reactive({
+    datos_proveedor <- adjudicaciones_colones %>%
       filter(proveedor_adjudicado == input$proveedor) %>%
-      group_by(institucion) %>%
+      group_by(institucion)
+  }) 
+  output$cantidad_instituciones_slider <- renderUI({
+    datos_proveedor() %>%
       summarise(
         total_contratos = n()
       )
     sliderInput("instituciones_slider", "Cantidad de instituciones públicas",
                 min = 1,
-                max = nrow(datos),
+                max = nrow(datos_proveedor()),
                 value = 10)
   })
 
   output$proveedores <- renderPlot({
-    datos <- adjudicaciones_colones %>%
-      filter(proveedor_adjudicado == input$proveedor) %>%
-      group_by(institucion) %>%
+    datos_proveedor() %>%
       summarise(
         total_contratos = n(),
         total_monto = sum(monto_adjudicado)
-      )
-
-    datos %>%
+      ) %>%
       arrange(desc(total_monto)) %>%
       slice(1:input$instituciones_slider) %>%
       ggplot(aes(x = reorder(institucion, total_monto), y = total_monto, fill = institucion)) +
@@ -60,9 +73,7 @@ server <- function(input, output) {
 
 
   output$porcentaje_seleccion_proveedor <- renderPlot({
-    datos <- adjudicaciones_colones %>%
-      filter(proveedor_adjudicado == input$proveedor) %>%
-      group_by(institucion) %>%
+    datos <- datos_proveedor() %>%
       summarise(
         total_contratos = n(),
         total_monto = sum(monto_adjudicado)
@@ -90,59 +101,58 @@ server <- function(input, output) {
 
 # TAB INSTITUCIONES -------------------------------------------------------
 
+ datos_institucion <- reactive({
+   datos_institucion <- adjudicaciones_colones %>%
+     filter(institucion == input$institucion) %>%
+     group_by(proveedor_adjudicado)
+ }) 
+  
  output$cantidad_proveedores_slider <- renderUI({
-    datos <- adjudicaciones_colones %>% 
-      filter(institucion == input$institucion) %>% 
-      group_by(proveedor_adjudicado) %>% 
+     datos_institucion() %>%
       summarise(
         total_contratos = n()
       )
+    
     sliderInput("proveedores_slider", "Cantidad de proveedores",
                 min = 1,
-                max = nrow(datos),
+                max = nrow(datos_institucion()),
                 value = 10,
                 round = TRUE,
                 step = 1)
   })
-  
+
   output$instituciones <- renderPlot({
-    datos <- adjudicaciones_colones %>% 
-      filter(institucion == input$institucion) %>% 
-      group_by(proveedor_adjudicado) %>% 
+    datos_institucion() %>%
       summarise(
         total_contratos = n(),
         total_monto = sum(monto_adjudicado)
-      )
-    
-    datos %>% 
-      arrange(desc(total_monto)) %>% 
-      slice(1:input$proveedores_slider) %>% 
-      ggplot(aes(x = reorder(proveedor_adjudicado, total_monto), y = total_monto, fill = proveedor_adjudicado)) + 
+      ) %>%
+      arrange(desc(total_monto)) %>%
+      slice(1:input$proveedores_slider) %>%
+      ggplot(aes(x = reorder(proveedor_adjudicado, total_monto), y = total_monto, fill = proveedor_adjudicado)) +
       geom_bar(stat = "identity") +
       scale_fill_viridis_d() +
       labs(y = "Total monto adjudicado",
            x = "Proveedores adjudicados") +
-      coord_flip() + 
+      coord_flip() +
       theme_bw(base_size = 14) +
       theme(axis.text.x  = element_text(angle = 25, vjust = 0.5, size = 16)) +
       theme(legend.position = "none")
   })
-  
+
   output$porcentaje_seleccion <- renderPlot({
-    datos <- adjudicaciones_colones %>%
-      filter(institucion == input$institucion) %>%
-      group_by(proveedor_adjudicado) %>%
+    datos <- datos_institucion() %>%
       summarise(
         total_contratos = n(),
         total_monto = sum(monto_adjudicado)
-      ) 
-    
-    valores_seleccionar <- datos %>% 
+      )
+
+    valores_seleccionar <- datos %>%
       arrange(desc(total_monto)) %>%
       slice(1:input$proveedores_slider)
-    
+
     valor <- min(valores_seleccionar$total_monto)
-    
+
     datos %>%
       mutate(seleccion = ifelse(total_monto >= valor, "Seleccionados", "Resto")) %>%
       mutate(unidad = "") %>%
@@ -153,8 +163,8 @@ server <- function(input, output) {
            y = "Porcentaje correspondiente del monto total",
            fill = "Selección de la cantidad
        de proveedores") +
-      theme_classic() 
-    
+      theme_classic()
+
   })
 }
 
