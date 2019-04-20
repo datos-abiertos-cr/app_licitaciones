@@ -50,7 +50,9 @@ server <- function(input, output) {
     sliderInput("instituciones_slider", "Cantidad de instituciones públicas",
                 min = 1,
                 max = nrow(datos_proveedor_unicos),
-                value = 10)
+                value = 10,
+                round = TRUE,
+                step = 1)
   })
 
   output$proveedores <- renderPlot({
