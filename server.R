@@ -98,7 +98,9 @@ server <- function(input, output) {
     sliderInput("proveedores_slider", "Cantidad de proveedores",
                 min = 1,
                 max = nrow(datos),
-                value = 10)
+                value = 10,
+                round = TRUE,
+                step = 1)
   })
   
   output$instituciones <- renderPlot({

@@ -73,6 +73,29 @@ body <- dashboardBody({
       tabName = "proveedores_por_institucion",
       fluidRow(
         column(
+          width = 6,
+          box(
+            width = 12,
+            title = "ELegir cantidad de proveedores a graficar",
+            status = "info",
+            solidHeader = TRUE,
+            uiOutput("cantidad_proveedores_slider")
+          )
+        ),
+        column(
+          width = 6,
+          box(
+            width = 12,
+            title = "ELegir institución pública a explorar",
+            status = "info",
+            solidHeader = TRUE,
+            selectInput("institucion", "Institución pública",
+                        choices = adjudicaciones_colones$institucion)
+          )
+        )),
+      
+      fluidRow(
+        column(
           width = 8,
           box(
             width = 12,
@@ -91,17 +114,8 @@ body <- dashboardBody({
           solidHeader = TRUE,
           plotOutput("porcentaje_seleccion")
         )
-      )),
-      fluidRow(
-        column(
-          width = 6,
-          uiOutput("cantidad_proveedores_slider")
-      ),
-      column(
-        width = 6,
-        selectInput("institucion", "Institución pública",
-                    choices = adjudicaciones_colones$institucion)
       ))
+      
     )
   )
 })
