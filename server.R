@@ -41,14 +41,15 @@ server <- function(input, output) {
       filter(proveedor_adjudicado == input$proveedor) %>%
       group_by(institucion)
   }) 
+  
   output$cantidad_instituciones_slider <- renderUI({
-    datos_proveedor() %>%
+    datos_proveedor_unicos <- datos_proveedor() %>%
       summarise(
         total_contratos = n()
       )
     sliderInput("instituciones_slider", "Cantidad de instituciones públicas",
                 min = 1,
-                max = nrow(datos_proveedor()),
+                max = nrow(datos_proveedor_unicos),
                 value = 10)
   })
 
@@ -108,14 +109,14 @@ server <- function(input, output) {
  }) 
   
  output$cantidad_proveedores_slider <- renderUI({
-     datos_institucion() %>%
+     datos_institucion_unicos <- datos_institucion() %>%
       summarise(
         total_contratos = n()
       )
     
     sliderInput("proveedores_slider", "Cantidad de proveedores",
                 min = 1,
-                max = nrow(datos_institucion()),
+                max = nrow(datos_institucion_unicos),
                 value = 10,
                 round = TRUE,
                 step = 1)
