@@ -42,29 +42,29 @@ body <- dashboardBody({
 
 # TAB PROVEEDORES ---------------------------------------------------------
 
-    # tabItem(
-    #   tabName = "instituciones_por_proveedor",
-    #   fluidRow(
-    #     column(
-    #       width = 8,
-    #       plotOutput("proveedores")
-    #     ),
-    #     column(
-    #       width = 4,
-    #       plotOutput("porcentaje_seleccion_proveedor")
-    #     )),
-    # 
-    #   fluidRow(
-    #     column(
-    #       width = 6,
-    #       uiOutput("cantidad_instituciones_slider")
-    #     ),
-    #     column(
-    #       width = 6,
-    #       selectInput("proveedor", "Proveedor",
-    #                   choices = adjudicaciones_colones$proveedor_adjudicado)
-    #     ))
-    # ),
+    tabItem(
+      tabName = "instituciones_por_proveedor",
+      fluidRow(
+        column(
+          width = 8,
+          plotOutput("proveedores")
+        ),
+        column(
+          width = 4,
+          plotOutput("porcentaje_seleccion_proveedor")
+        )),
+
+      fluidRow(
+        column(
+          width = 6,
+          uiOutput("cantidad_instituciones_slider")
+        ),
+        column(
+          width = 6,
+          selectInput("proveedor", "Proveedor",
+                      choices = adjudicaciones_colones$proveedor_adjudicado)
+        ))
+    ),
 
 
 # TAB INSTITUCIONES -------------------------------------------------------
