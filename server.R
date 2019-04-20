@@ -33,7 +33,7 @@ server <- function(input, output) {
       )
     sliderInput("instituciones_slider", "Cantidad de instituciones públicas",
                 min = 1,
-                max = nrow(datos),
+                max = nrow(datos_proveedor()),
                 value = 10)
   })
 
@@ -100,7 +100,7 @@ server <- function(input, output) {
     
     sliderInput("proveedores_slider", "Cantidad de proveedores",
                 min = 1,
-                max = nrow(datos),
+                max = nrow(datos_institucion()),
                 value = 10,
                 round = TRUE,
                 step = 1)
