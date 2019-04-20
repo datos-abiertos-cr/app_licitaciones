@@ -5,19 +5,34 @@ server <- function(input, output) {
 # TAB GENERAL -------------------------------------------------------------
 
   output$instituciones_adjudicacion <- function(){
-    adjudicaciones_colones %>% 
+    adjudicaciones_colones <- adjudicaciones_colones %>% 
       group_by(institucion) %>% 
       summarise(
         total = n(),
         monto = sum(monto_adjudicado, na.rm = TRUE)
       ) %>% 
       arrange(desc(total)) %>% 
-      mutate(monto = moneda(monto)) %>%
+      mutate(monto = moneda(monto))
+    
+    adjudicaciones_colones %>% 
       slice(1:30) %>% 
       knitr::kable("html") %>%
       kable_styling(bootstrap_options = c("striped", "hover"))
   }
   
+  output$cantidad_instituciones <- renderValueBox({
+    valueBox(length(unique(adjudicaciones_colones$institucion)),
+             "Instituciones públicas en total analizadas",
+             icon = icon("city"),
+             color = "aqua")
+  })
+  
+  output$cantidad_proveedores <- renderValueBox({
+    valueBox(length(unique(adjudicaciones_colones$proveedor_adjudicado)),
+             "Proveedores en total analizados",
+             icon = icon("cart-plus"),
+             color = "olive")
+  })
 
 # TAB PROVEEDORES ---------------------------------------------------------
   

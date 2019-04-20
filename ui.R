@@ -36,9 +36,20 @@ body <- dashboardBody({
             title = "Cuadro mayores instituciones  con adjudicaciones",
             status = "danger",
             tableOutput("instituciones_adjudicacion"))
+      ),
+      
+      fluidRow(
+        # column(
+          # width = 12,
+          valueBoxOutput("cantidad_instituciones"),
+        # ),
+        # column(
+        #   width = 12,
+          valueBoxOutput("cantidad_proveedores")
+        # )
       )
+      
     ),
-    
 
 # TAB PROVEEDORES ---------------------------------------------------------
 
