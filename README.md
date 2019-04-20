@@ -6,6 +6,8 @@ El dashboard pretende dar interactividad ante el usuario que le permita hacer un
 
 El dashboard muestra secciones como las siguientes:
 
+![](img/dashboard_licitaciones.png)
+
 
 
 Estas secciones permiten explorar y responder preguntas cómo:
